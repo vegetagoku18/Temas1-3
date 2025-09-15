@@ -4,21 +4,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ejercicio4
+namespace Ejercicio4 //menos código en peticion datos
 {
     internal class Program
     {
         public static bool EsBisiesto(int anho)
         {
-            if (anho % 4 == 0 && anho % 100 != 0 || anho % 400 == 0)
+            return (anho % 4 == 0 && anho % 100 != 0 || anho % 400 == 0);
+        }
+
+        public static int? SumaRango(int valor1, int valor2)
+        {
+            int suma = 0;
+            if (valor1 > valor2)
             {
-                return true;
+                return null;
             }
-            return false;
+            for (int i = valor1 + 1; i < valor2; i++)
+            {
+                suma += i;
+            }
+            return suma;
+        }
+
+        public static int PedirDato()
+        {
+            Console.WriteLine("Dime un valor entre 1 y 10000");
+            bool esValido = int.TryParse(Console.ReadLine(), out int anho);
+            esValido = anho >= 1 && anho <= 10000 && EsBisiesto(anho);
+            while (!esValido && (anho < 1 || anho > 10000))
+            {
+                Console.WriteLine("Año no válido, dime un año entre 1 y 10000");
+                esValido = int.TryParse(Console.ReadLine(), out anho);
+                esValido = anho >= 1 && anho <= 10000 && EsBisiesto(anho);
+            }
+            return anho;
         }
         static void Main(string[] args)
         {
             bool exit = false;
+            bool opc3 = false;
             while (!exit)
             {
                 Console.WriteLine("Elige una opción:");
@@ -30,30 +55,28 @@ namespace Ejercicio4
                 switch (opcionSeleccionada)
                 {
                     case 1:
-                        Console.WriteLine("Dime un año entre 1 y 10000");
-                        bool esAnho = int.TryParse(Console.ReadLine(), out int anho);
-                        esAnho = anho >= 1 && anho <= 10000 && EsBisiesto(anho);
-                        while (!esAnho && (anho < 1 || anho > 10000))
+                        int anho = PedirDato();
+                        string mensaje = EsBisiesto(anho) ? "El año " + anho + " es bisiesto" : "El año " + anho + " no es bisiesto";
+                        Console.WriteLine(mensaje);
+                        if (opc3)
                         {
-                            Console.WriteLine("Año no válido, dime un año entre 1 y 10000");
-                            esAnho = int.TryParse(Console.ReadLine(), out anho);
-                            esAnho = anho >= 1 && anho <= 10000 && EsBisiesto(anho);
-                        }
-                        if (esAnho)
-                        {
-                            Console.WriteLine("El año es bisiesto");
-                        }
-                        else
-                        {
-                            Console.WriteLine("El año no es bisiesto");
+                            opc3 = false;
+                            Console.WriteLine("Opcion 2");
+                            goto case 2;
                         }
                         break;
                     case 2:
-                        Console.WriteLine();
+                        Console.WriteLine("Valor 1");
+                        int numero1 = PedirDato();
+                        Console.WriteLine("Valor 2");
+                        int numero2 = PedirDato();
+                        int? suma = SumaRango(numero1, numero2);
+                        string mensajeSuma = suma == null ? "El primer valor debe ser menor que el segundo" : $"La suma de los números entre {numero1} y {numero2} es {suma}";
+                        Console.WriteLine(mensajeSuma);
                         break;
                     case 3:
-                        Console.WriteLine();
-                        break;
+                        opc3 = true;
+                        goto case 1;
                     case 4:
                         exit = true;
                         break;
