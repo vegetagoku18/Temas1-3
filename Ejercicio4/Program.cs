@@ -31,12 +31,13 @@ namespace Ejercicio4 //menos código en peticion datos
         {
             Console.WriteLine("Dime un valor entre 1 y 10000");
             bool esValido = int.TryParse(Console.ReadLine(), out int anho);
-            esValido = anho >= 1 && anho <= 10000 && EsBisiesto(anho);
-            while (!esValido && (anho < 1 || anho > 10000))
+            esValido = anho >= 1 && anho <= 10000;
+            Console.WriteLine(esValido);
+            while (!esValido )
             {
                 Console.WriteLine("Año no válido, dime un año entre 1 y 10000");
                 esValido = int.TryParse(Console.ReadLine(), out anho);
-                esValido = anho >= 1 && anho <= 10000 && EsBisiesto(anho);
+                esValido = anho >= 1 && anho <= 10000 ;
             }
             return anho;
         }
