@@ -8,10 +8,9 @@ namespace Ejercicio7
 {
     internal class Cometa : Astro, ITerraformable
     {
-        public Cometa(string nombre, double radio) : base(nombre, radio)
+        public Cometa(string nombre, double radio) : base(nombre, radio) //TODO revisar
         {
-            Nombre = nombre;
-            Radio = radio;
+
         }
 
         public bool EsHabitable()

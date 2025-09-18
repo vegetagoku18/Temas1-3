@@ -99,49 +99,52 @@ namespace Ejercicio7
             Console.Write("Nombre del astro: ");
             string nombre = Console.ReadLine();
 
-            // Recuerda que en la propiedad Nombre añades comillas y mayúsculas,
-            // por eso buscamos con ese formato:
-            string nombreBusqueda = $"\"{nombre.ToUpper()}\"";
+            string nombreBusqueda = nombre.ToUpper();
 
-            // Usamos IndexOf pasando el string para buscar gracias a Equals sobrecargado
-            //int index = astros.IndexOf(new Astro("Tierra", 6378));
-
-            if (index == -1)
+            Astro astroEncontrado = new Planeta(nombreBusqueda, 1, false, 0);
+            int index = astros.IndexOf(astroEncontrado);
+            if (index != -1)
             {
-                Console.WriteLine("Astro no encontrado.");
-                return;
-            }
-
-            if (astros[index] is Planeta planeta)
-            {
-                Console.Write("¿Deseas incrementar (i) o decrementar (d) el número de satélites? ");
-                string opcion = Console.ReadLine().ToLower();
-
-                if (opcion == "i")
+                Astro astro = astros[index];
+                if (astro is Planeta)
                 {
-                    planeta.NumSatelites++;
-                    Console.WriteLine("Número de lunas incrementado.");
-                }
-                else if (opcion == "d")
-                {
-                    if (planeta.NumSatelites > 0)
+                    Console.WriteLine("¿Quieres incrementar o decrementar un satélite? (i/d): ");
+                    string opcion = Console.ReadLine().ToLower();
+                    Planeta planeta = (Planeta)astro;
+                    if (opcion == "i")
                     {
-                        planeta.NumSatelites--;
-                        Console.WriteLine("Número de lunas decrementado.");
+                        planeta++;
+                        Console.WriteLine("Satélite añadido.");
+                    }
+                    else if (opcion == "d")
+                    {
+                        planeta--;
+                        Console.WriteLine("Satélite eliminado.");
                     }
                     else
                     {
-                        Console.WriteLine("El planeta no tiene lunas para decrementar.");
+                        Console.WriteLine("Opción no válida.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Opción no válida.");
+                    Console.WriteLine("El astro no es un planeta.");
                 }
             }
             else
             {
-                Console.WriteLine("El astro no es un planeta.");
+                Console.WriteLine("Astro no encontrado.");
+            }
+        }
+
+        public static void EliminarNoTerraformables(List<Astro> astros)
+        {
+            for (int i = astros.Count-1; i >= 0; i--)
+            {
+                if (astros[i] is ITerraformable terraformable && !terraformable.EsHabitable())
+                {
+                    astros.RemoveAt(i);
+                }
             }
         }
 
@@ -178,7 +181,7 @@ namespace Ejercicio7
                 Console.WriteLine("1. Crear planeta");
                 Console.WriteLine("2. Crear cometa");
                 Console.WriteLine("3. Mostrar datos");
-                Console.WriteLine("4. Añadir o eliminar satélite a un planeta");
+                Console.WriteLine("4. Incrementar o decrementar un satélite a un planeta");
                 Console.WriteLine("5. Eliminar los no terraformables");
                 Console.WriteLine("6. Salir");
                 bool opcionValida = int.TryParse(Console.ReadLine(), out int opcion);
@@ -199,6 +202,7 @@ namespace Ejercicio7
                         ModificarSatelites(astros);
                         break;
                     case 5:
+                        EliminarNoTerraformables(astros);
                         break;
                     case 6:
                         salir = true;

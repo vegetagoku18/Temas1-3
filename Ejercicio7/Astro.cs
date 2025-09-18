@@ -10,20 +10,19 @@ namespace Ejercicio7
     {
         private string nombre;
         private double radio;
-        public Astro()
+        public Astro() : this("Tierra",6378)//TODO llamara al otro
         {
-            nombre = "Tierra";
-            radio = 6378;
+
         }
         public Astro(string nombre, double radio)
         {
-            this.nombre = nombre;
-            this.radio = radio;
+            this.Nombre = nombre;
+            this.Radio = radio;
         }
-        public string Nombre
+        public string Nombre  //TODO diferenciar set/get
         {
-            set { nombre = $"\"{value.ToUpper()}\""; }
-            get { return nombre; }
+            set { nombre = value.ToUpper(); }
+            get { return $"\"{nombre}\""; }
         }
         public double Radio
         {
