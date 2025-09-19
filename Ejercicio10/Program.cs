@@ -67,54 +67,129 @@ namespace Ejercicio10
                 return true;
             }
 
-            public void SumarMatriz(object obj)
+            public int[,] SumarMatriz(object obj)
             {
                 if (obj == null)
                 {
-                    throw new MatrizException ("La matriz no puede ser null");
+                    throw new MatrizException("La matriz no puede ser null");
                 }
-                int filas = this.matriz.GetLength(0);
-                int columnas = this.matriz.GetLength(1);
 
-                if (obj is int[,])
+                int filas = Matriz.GetLength(0);
+                int columnas = Matriz.GetLength(1);
+
+                if (obj is int[,] matrizInt)
                 {
-                    int[,] otraMatriz = (int[,])obj;
-                    if (otraMatriz.GetLength(0) != filas || otraMatriz.GetLength(1) != columnas)
+                    if (matrizInt.GetLength(0) != filas || matrizInt.GetLength(1) != columnas)
                     {
                         throw new MatrizException("Las matrices no tienen las mismas dimensiones");
                     }
-
-                    for (int i = 0; i < filas; i++)
+                    int[,] resultado = new int[filas, columnas];
                     {
-                        for (int j = 0; j < columnas; j++)
-                        {
-                            this.matriz[i, j] += otraMatriz[i, j];
-                        }
+                        for (int i = 0; i < filas; i++)
+                            for (int j = 0; j < columnas; j++)
+                            {
+                                resultado[i, j] = matrizInt[i, j] + Matriz[i, j];
+                            }
                     }
+                    return resultado;
                 }
                 else
                 {
-                    if (obj is GestorMatriz)
+                    if (obj is GestorMatriz matrizGestor)
                     {
-                        GestorMatriz gestor = (GestorMatriz)obj;
-                        if (gestor.Matriz.GetLength(0) != filas || gestor.Matriz.GetLength(1) != columnas)
+                        if (matrizGestor.Matriz.GetLength(0) != filas || matrizGestor.Matriz.GetLength(1) != columnas)
                         {
                             throw new MatrizException("Las matrices no tienen las mismas dimensiones");
                         }
+                        int[,] resultado = new int[filas, columnas];
                         for (int i = 0; i < filas; i++)
                         {
                             for (int j = 0; j < columnas; j++)
                             {
-                                this.matriz[i, j] += gestor.Matriz[i, j];
+                                resultado[i, j] = matrizGestor.Matriz[i, j] + Matriz[i, j];
                             }
                         }
+                        return resultado;
                     }
+                    else
+                    {
+                        if (obj is double[,] matrizDouble)
+                        {
+                            if (matrizDouble.GetLength(0) != filas || matrizDouble.GetLength(1) != columnas)
+                            {
+                                throw new MatrizException("Las matrices no tienen  las mismas dimensiones");
+                            }
+                            int[,] resultado = new int[filas, columnas];
+                            for (int i = 0; i < filas; i++)
+                            {
+                                for (int j = 0; j < columnas; j++)
+                                {
+                                    resultado[i, j] = (int)(matrizDouble[i, j] + Matriz[i, j]);
+                                }
+                            }
+                            return resultado;
+                        }
+                        else
+                        {
+                            throw new MatrizException("El objeto no es una matriz válida");
+                        }
+                    }
+                }
+            }
+
+            public double[] medias(bool columnaFila)
+            {
+                double[] arrayMedias = new double[Matriz.GetLength(0)];
+                if (columnaFila)
+                {
+                    for (int i = 0; i < Matriz.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < Matriz.GetLength(1); j++)
+                        {
+                            arrayMedias[i] += Matriz[i, j];
+                        }
+                        arrayMedias[i] /= Matriz.GetLength(1);
+                    }
+                    return arrayMedias;
+                }
+
+                arrayMedias = new double[Matriz.GetLength(1)];
+                for (int i = 0; i < Matriz.GetLength(1); i++)
+                {
+                    for (int j = 0; j < Matriz.GetLength(0); j++)
+                    {
+                        arrayMedias[i] += Matriz[j, i];
+                    }
+                    arrayMedias[i] /= Matriz.GetLength(0);
+                }
+                return arrayMedias;
+            }
+
+            public static void MostrarMatriz<T>(T[,] matriz)
+            {
+                Console.Write("\n");
+                Console.Write("     ");
+                for (int i = 0; i < matriz.GetLength(1); i++)
+                {
+                    char caracter = (char)('A' + i);
+                    Console.Write($"{caracter,5}");
+                }
+                Console.WriteLine();
+                for (int i = 0; i < matriz.GetLength(0); i++)
+                {
+                    Console.Write($"{i + 1,5}"); // Cabecera de fila
+                    for (int j = 0; j < matriz.GetLength(1); j++)
+                    {
+                        Console.Write($"{matriz[i, j],5}");
+                    }
+                    Console.WriteLine();
                 }
             }
         }
         static void Main(string[] args)
         {
-
+            GestorMatriz gestor = new GestorMatriz();
+            GestorMatriz.MostrarMatriz(gestor.Matriz);
         }
     }
 }
