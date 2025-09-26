@@ -18,19 +18,14 @@ namespace Ejercicio7
             string nombre = Console.ReadLine();
             Console.WriteLine("Introduce el radio del planeta (en km):");
             double radio = 0;
-            try
-            {
-                bool radioValido = double.TryParse(Console.ReadLine(), out radio);
-                while (!radioValido)
+          
+                 
+                while (!double.TryParse(Console.ReadLine(), out radio))
                 {
                     Console.WriteLine("Radio inválido. Introduce un número positivo:");
-                    radioValido = double.TryParse(Console.ReadLine(), out radio);
+                 
                 }
-            }
-            catch (ArgumentException e)
-            {
-                Console.WriteLine(e.Message);
-            }
+        
             Console.WriteLine("¿Es un planeta gaseoso? (si/no):");
             string gaseosoInput = Console.ReadLine().ToLower();
             bool gaseoso = gaseosoInput == "si";
@@ -42,7 +37,7 @@ namespace Ejercicio7
                 satelitesValidos = int.TryParse(Console.ReadLine(), out numSatelites);
             }
             planeta.Nombre = nombre;
-            planeta.Radio = radio;
+            planeta.Radio = radio;//TODO try
             planeta.Gaseoso = gaseoso;
             planeta.NumSatelites = numSatelites;
             return planeta;
@@ -55,19 +50,14 @@ namespace Ejercicio7
             string nombre = Console.ReadLine();
             Console.WriteLine("Introduce el radio del cometa (en km):");
             double radio = 0;
-            try
-            {
+ 
                 bool radioValido = double.TryParse(Console.ReadLine(), out radio);
                 while (!radioValido)
                 {
                     Console.WriteLine("Radio inválido. Introduce un número positivo:");
                     radioValido = double.TryParse(Console.ReadLine(), out radio);
                 }
-            }
-            catch (ArgumentException e)
-            {
-                Console.WriteLine(e.Message);
-            }
+ 
             cometa.Nombre = nombre;
             cometa.Radio = radio;
             return cometa;

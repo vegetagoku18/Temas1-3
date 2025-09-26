@@ -8,7 +8,7 @@ namespace Ejercicio7
 {
     internal class Cometa : Astro, ITerraformable
     {
-        public Cometa(string nombre, double radio) : base(nombre, radio) //TODO revisar
+        public Cometa(string nombre, double radio) : base(nombre, radio) 
         {
 
         }

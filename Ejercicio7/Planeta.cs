@@ -8,7 +8,7 @@ namespace Ejercicio7
 {
     internal class Planeta : Astro, ITerraformable
     {
-        private bool gaseoso;  //TODO modificadores
+        private bool gaseoso;  
         private int numSatelites;
 
         public bool Gaseoso  //abreviada {set; get;}
@@ -41,12 +41,12 @@ namespace Ejercicio7
                 return numSatelites;
             }
         }
-        public Planeta(string nombre, double radio, bool gaseoso, int numSatelites) : base(nombre, radio)//TODO usar base(...)
+        public Planeta(string nombre, double radio, bool gaseoso, int numSatelites) : base(nombre, radio)
         {
             Gaseoso = gaseoso;
             NumSatelites = numSatelites;
         }
-        public Planeta() : this("", 1, false, 0)  //TODO usa this(...) 
+        public Planeta() : this("", 1, false, 0)  
         {
         }
 

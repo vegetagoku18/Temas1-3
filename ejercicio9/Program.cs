@@ -10,6 +10,8 @@ namespace ejercicio9
     {
         static Dictionary<string, Ordenador> diccionario = new Dictionary<string, Ordenador>();
 
+        //TODO evitar repetir codigo de peticion de datos
+
         public static void anhadirOrdenador()
         {
             Console.WriteLine("Introduce el nombre del ordenador");
@@ -38,7 +40,7 @@ namespace ejercicio9
             }
             else
             {
-                diccionario.Add(ip, new Ordenador { nombre = nombre, ram = ram });
+                diccionario.Add(ip, new Ordenador { Nombre = nombre, ram = ram });
             }
         }
 
@@ -78,7 +80,7 @@ namespace ejercicio9
             if (diccionario.ContainsKey(ip))
             {
                 Ordenador ordenador = diccionario[ip];
-                Console.WriteLine($"Nombre: {ordenador.nombre}, RAM: {ordenador.ram}GB, IP: {ip}");
+                Console.WriteLine($"Nombre: {ordenador.Nombre}, RAM: {ordenador.ram}GB, IP: {ip}");
             }
             else
             {
@@ -94,6 +96,7 @@ namespace ejercicio9
                 Console.WriteLine("Elige una opción");
                 Console.WriteLine("1. Añadir ordenador");
                 Console.WriteLine("2. Eliminar ordenador");
+                // TODO listado de IPs
                 Console.WriteLine("3. Mostrar un ordenador");
                 Console.WriteLine("4. Salir");
 

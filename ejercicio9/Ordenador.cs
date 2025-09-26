@@ -8,13 +8,15 @@ namespace ejercicio9
 {
     internal class Ordenador
     {
-        public string nombre;
+        public string Nombre { set; get; }
         public int ram;
 
-        public static bool IPValida(string ip)
+        public static bool IPValida(string ip)//TODO letras y numeros grandes
         {
             string[] partes = ip.Split('.');
+
             if (partes.Length != 4) return false;
+
             foreach (var item in partes)
             {
                 if (int.Parse(item) < 0 || int.Parse(item) > 255)

@@ -10,7 +10,7 @@ namespace Ejercicio7
     {
         private string nombre;
         private double radio;
-        public Astro() : this("Tierra",6378)//TODO llamara al otro
+        public Astro() : this("Tierra",6378)
         {
 
         }
@@ -19,7 +19,7 @@ namespace Ejercicio7
             this.Nombre = nombre;
             this.Radio = radio;
         }
-        public string Nombre  //TODO diferenciar set/get
+        public string Nombre  
         {
             set { nombre = value.ToUpper(); }
             get { return $"\"{nombre}\""; }
