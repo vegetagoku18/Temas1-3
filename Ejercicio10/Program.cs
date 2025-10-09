@@ -6,190 +6,100 @@ using System.Threading.Tasks;
 
 namespace Ejercicio10
 {
-    internal class Program
+    internal class Program//TODO estructuración correcta en clases
     {
-        public class MatrizException : Exception
+
+        public static int pedirDato()
         {
-            public MatrizException() : base("La matriz no es válida")
+            Console.WriteLine("Introduce un número entero:");
+            string input = Console.ReadLine();
+            int numero;
+            while (!int.TryParse(input, out numero))
             {
+                Console.WriteLine("Entrada inválida. Introduce un número entero:");
+                input = Console.ReadLine();
             }
-            public MatrizException(string message) : base(message)
-            {
-            }
+            return numero;
         }
-        internal class GestorMatriz
+        static void Main(string[] args)//TODO principal
         {
-            private int[,] matriz;
-
-            public int[,] Matriz
+            GestorMatriz gm = new GestorMatriz();
+            bool salir = false;
+            while (!salir)
             {
-                set { matriz = value; }
-                get { return matriz; }
-            }
+                Console.WriteLine("Elige una opcion:");
+                Console.WriteLine("1. Mostrar tabla");
+                Console.WriteLine("2. Mostrar medias");
+                Console.WriteLine("3. Suma de una fila");
+                Console.WriteLine("4. Suma de una columna");
+                Console.WriteLine("5. Incremento aleatorio");
+                Console.WriteLine("6. Cambiar matriz");
+                Console.WriteLine("7. Salir");
 
-            public GestorMatriz(int filas, int columnas)
-            {
-                Matriz = new int[filas, columnas];
-                Random rand = new Random();
-                for (int i = 0; i < filas; i++)
+                string opcion = Console.ReadLine();
+                bool esValido = int.TryParse(opcion, out int opcionInt);
+                switch (opcionInt)
                 {
-                    for (int j = 0; j < columnas; j++)
-                    {
-                        Matriz[i, j] = rand.Next(-5, 21);
-                    }
-                }
-            }
-
-            public GestorMatriz() : this(3, 4)
-            {
-
-            }
-
-            public (int, bool) SumaFila(int fila)
-            {
-                if (fila < 0 || fila >= matriz.GetLength(0)) return (0, false);
-                int suma = 0;
-                for (int j = 0; j < matriz.GetLength(1); j++)
-                {
-                    suma += matriz[fila, j];
-                }
-                return (suma, true);
-            }
-
-            public bool SumaColumna(int columna, out int suma)
-            {
-                suma = 0;
-                if (columna < 0 || columna >= matriz.GetLength(1)) return false;
-                for (int i = 0; i < matriz.GetLength(0); i++)
-                {
-                    suma += matriz[i, columna];
-                }
-                return true;
-            }
-
-            public int[,] SumarMatriz(object obj)
-            {
-                if (obj == null)
-                {
-                    throw new MatrizException("La matriz no puede ser null");
-                }
-
-                int filas = Matriz.GetLength(0);
-                int columnas = Matriz.GetLength(1);
-
-                if (obj is int[,] matrizInt)
-                {
-                    if (matrizInt.GetLength(0) != filas || matrizInt.GetLength(1) != columnas)
-                    {
-                        throw new MatrizException("Las matrices no tienen las mismas dimensiones");
-                    }
-                    int[,] resultado = new int[filas, columnas];
-                    {
-                        for (int i = 0; i < filas; i++)
-                            for (int j = 0; j < columnas; j++)
-                            {
-                                resultado[i, j] = matrizInt[i, j] + Matriz[i, j];
-                            }
-                    }
-                    return resultado;
-                }
-                else
-                {
-                    if (obj is GestorMatriz matrizGestor)
-                    {
-                        if (matrizGestor.Matriz.GetLength(0) != filas || matrizGestor.Matriz.GetLength(1) != columnas)
+                    case 1:
+                        GestorMatriz.MostrarMatriz(gm.Matriz);
+                        break;
+                    case 2:
+                        double[] mediasFilas = gm.medias(true);
+                        Console.WriteLine("Medias de las filas:");
+                        for (int i = 0; i < mediasFilas.Length; i++)
                         {
-                            throw new MatrizException("Las matrices no tienen las mismas dimensiones");
+                            Console.WriteLine($"Fila {(i + 1)}: {mediasFilas[i]:F2}");
                         }
-                        int[,] resultado = new int[filas, columnas];
-                        for (int i = 0; i < filas; i++)
+                        double[] mediasColumnas = gm.medias(false);
+                        Console.WriteLine("Medias de las columnas:");
+                        for (int i = 0; i < mediasFilas.Length; i++)
                         {
-                            for (int j = 0; j < columnas; j++)
+                            Console.WriteLine($"Columna {(i + 1)}: {mediasColumnas[i]:F2}");
+                        }
+                        break;
+                    case 3:
+                        int fila = pedirDato();
+                        var (sumaFila, esValida) = gm.SumaFila(fila - 1);
+                        string mensaje = esValida ? $"La suma de la fila {fila} es: {sumaFila}" : "No se ha podido hacer la suma";
+                        Console.WriteLine(mensaje);
+                        break;
+                    case 4:
+                        int columna = pedirDato();
+                        string mensajeColumna = gm.SumaColumna(columna - 1, out int sumaColumna) ? $"La suma de la columna {columna} es: {sumaColumna}" : "No se ha podido hacer la suma";
+                        Console.WriteLine(mensajeColumna);
+                        break;
+                    case 5:
+                        GestorMatriz incremento = new GestorMatriz();
+                        Random rand = new Random();
+                        for (int i = 0; i < incremento.Matriz.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < incremento.Matriz.GetLength(1); j++)
                             {
-                                resultado[i, j] = matrizGestor.Matriz[i, j] + Matriz[i, j];
+                                incremento.Matriz[i, j] = rand.Next(1, 11);
                             }
                         }
-                        return resultado;
-                    }
-                    else
-                    {
-                        if (obj is double[,] matrizDouble)
-                        {
-                            if (matrizDouble.GetLength(0) != filas || matrizDouble.GetLength(1) != columnas)
-                            {
-                                throw new MatrizException("Las matrices no tienen  las mismas dimensiones");
-                            }
-                            int[,] resultado = new int[filas, columnas];
-                            for (int i = 0; i < filas; i++)
-                            {
-                                for (int j = 0; j < columnas; j++)
-                                {
-                                    resultado[i, j] = (int)(matrizDouble[i, j] + Matriz[i, j]);
-                                }
-                            }
-                            return resultado;
-                        }
-                        else
-                        {
-                            throw new MatrizException("El objeto no es una matriz válida");
-                        }
-                    }
+                        Console.WriteLine("Matriz original");
+                        GestorMatriz.MostrarMatriz(gm.Matriz);
+                        Console.WriteLine("Matriz incremento");
+                        GestorMatriz.MostrarMatriz(incremento.Matriz);
+                        Console.WriteLine("Matriz resultante");
+                        GestorMatriz.MostrarMatriz(gm.SumarMatriz(incremento.Matriz));
+                        break;
+                    case 6:
+                        Console.WriteLine("Primero las filas");
+                        int filaCambio = pedirDato();
+                        Console.WriteLine("Ahora las columnas");
+                        int columnaCambio = pedirDato();
+                        gm = new GestorMatriz(filaCambio, columnaCambio);
+                        break;
+                    case 7:
+                        salir = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opción inválida, elige una opción del 1 al 7.");
+                        break;
                 }
             }
-
-            public double[] medias(bool columnaFila)
-            {
-                double[] arrayMedias = new double[Matriz.GetLength(0)];
-                if (columnaFila)
-                {
-                    for (int i = 0; i < Matriz.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < Matriz.GetLength(1); j++)
-                        {
-                            arrayMedias[i] += Matriz[i, j];
-                        }
-                        arrayMedias[i] /= Matriz.GetLength(1);
-                    }
-                    return arrayMedias;
-                }
-
-                arrayMedias = new double[Matriz.GetLength(1)];
-                for (int i = 0; i < Matriz.GetLength(1); i++)
-                {
-                    for (int j = 0; j < Matriz.GetLength(0); j++)
-                    {
-                        arrayMedias[i] += Matriz[j, i];
-                    }
-                    arrayMedias[i] /= Matriz.GetLength(0);
-                }
-                return arrayMedias;
-            }
-
-            public static void MostrarMatriz<T>(T[,] matriz)
-            {
-                Console.Write("\n");
-                Console.Write("     ");
-                for (int i = 0; i < matriz.GetLength(1); i++)
-                {
-                    char caracter = (char)('A' + i);
-                    Console.Write($"{caracter,5}");
-                }
-                Console.WriteLine();
-                for (int i = 0; i < matriz.GetLength(0); i++)
-                {
-                    Console.Write($"{i + 1,5}"); // Cabecera de fila
-                    for (int j = 0; j < matriz.GetLength(1); j++)
-                    {
-                        Console.Write($"{matriz[i, j],5}");
-                    }
-                    Console.WriteLine();
-                }
-            }
-        }
-        static void Main(string[] args)
-        {
-            GestorMatriz gestor = new GestorMatriz();
-            GestorMatriz.MostrarMatriz(gestor.Matriz);
         }
     }
 }
