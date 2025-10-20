@@ -1,6 +1,7 @@
 ﻿#define EJERCICIO8
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,14 +19,14 @@ namespace Ejercicio7
             string nombre = Console.ReadLine();
             Console.WriteLine("Introduce el radio del planeta (en km):");
             double radio = 0;
-          
-                 
-                while (!double.TryParse(Console.ReadLine(), out radio))
-                {
-                    Console.WriteLine("Radio inválido. Introduce un número positivo:");
-                 
-                }
-        
+
+
+            while (!double.TryParse(Console.ReadLine(), out radio))
+            {
+                Console.WriteLine("Radio inválido. Introduce un número positivo:");
+
+            }
+
             Console.WriteLine("¿Es un planeta gaseoso? (si/no):");
             string gaseosoInput = Console.ReadLine().ToLower();
             bool gaseoso = gaseosoInput == "si";
@@ -50,14 +51,14 @@ namespace Ejercicio7
             string nombre = Console.ReadLine();
             Console.WriteLine("Introduce el radio del cometa (en km):");
             double radio = 0;
- 
-                bool radioValido = double.TryParse(Console.ReadLine(), out radio);
-                while (!radioValido)
-                {
-                    Console.WriteLine("Radio inválido. Introduce un número positivo:");
-                    radioValido = double.TryParse(Console.ReadLine(), out radio);
-                }
- 
+
+            bool radioValido = double.TryParse(Console.ReadLine(), out radio);
+            while (!radioValido)
+            {
+                Console.WriteLine("Radio inválido. Introduce un número positivo:");
+                radioValido = double.TryParse(Console.ReadLine(), out radio);
+            }
+
             cometa.Nombre = nombre;
             cometa.Radio = radio;
             return cometa;
@@ -129,7 +130,7 @@ namespace Ejercicio7
 
         public static void EliminarNoTerraformables(List<Astro> astros)
         {
-            for (int i = astros.Count-1; i >= 0; i--)
+            for (int i = astros.Count - 1; i >= 0; i--)
             {
                 if (astros[i] is ITerraformable terraformable && !terraformable.EsHabitable())
                 {
@@ -159,11 +160,44 @@ namespace Ejercicio7
             Console.ReadKey();
 #else
             List<Astro> astros = new List<Astro>();
-            astros.Add(new Planeta("Tierra", 6378, false, 1));
+            /*astros.Add(new Planeta("Tierra", 6378, false, 1));
             astros.Add(new Cometa("Halley", 11));
             astros.Add(new Planeta("Jupiter", 69911, true, 97));
             astros.Add(new Cometa("Encke", 4));
-            astros.Add(new Planeta("Marte", 3390, false, 2));
+            astros.Add(new Planeta("Marte", 3390, false, 2));*/
+
+            try {
+                Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("appdata"));
+                using ( StreamReader sr = new StreamReader("astros.txt"))
+                {
+                    string linea;
+                    while ((linea = sr.ReadLine()) != null)
+                    {
+                        string[] partes = linea.Split(',');
+                        if (partes[0] == "Planeta")
+                        {
+                            string nombre = partes[1];
+                            double radio = double.Parse(partes[2]);
+                            bool gaseoso = bool.Parse(partes[3]);
+                            int numSatelites = int.Parse(partes[4]);
+                            Planeta planeta = new Planeta(nombre, radio, gaseoso, numSatelites);
+                            astros.Add(planeta);
+                        }
+                        else if (partes[0] == "Cometa")
+                        {
+                            string nombre = partes[1];
+                            double radio = double.Parse(partes[2]);
+                            Cometa cometa = new Cometa(nombre, radio);
+                            astros.Add(cometa);
+                        }
+                    }
+                }
+                
+            } catch (Exception e)
+            {
+                Console.WriteLine("Error al cargar los datos: " + e.Message);
+            }
+
             bool salir = false;
             while (!salir)
             {
@@ -195,6 +229,30 @@ namespace Ejercicio7
                         EliminarNoTerraformables(astros);
                         break;
                     case 6:
+
+                        Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("appdata"));
+                        try
+                        {
+                            using (StreamWriter sw = new StreamWriter("astros.txt"))
+                            {
+                                foreach (Astro astro in astros)
+                                {
+                                    if (astro is Planeta planeta)
+                                    {
+                                        sw.WriteLine($"Planeta,{planeta.Nombre},{planeta.Radio},{planeta.Gaseoso},{planeta.NumSatelites}");
+                                    }
+                                    else if (astro is Cometa cometa)
+                                    {
+                                        sw.WriteLine($"Cometa,{cometa.Nombre},{cometa.Radio}");
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Error al guardar los datos: " + e.Message);
+                        }
+
                         salir = true;
                         Console.ReadLine();
                         break;

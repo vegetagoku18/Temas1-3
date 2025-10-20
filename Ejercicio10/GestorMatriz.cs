@@ -150,10 +150,11 @@ namespace Ejercicio10
             arrayMedias = new double[Matriz.GetLength(1)];
             for (int i = 0; i < Matriz.GetLength(1); i++)
             {
-                if (!SumaColumna(i, out int suma))
-                {
-                    throw new MatrizException("Error al sumar columna");
-                }
+                SumaColumna(i, out int suma);
+                //if (!))
+                //{
+                //    throw new MatrizException("Error al sumar columna");
+                //}
                 arrayMedias[i] = suma / (double)Matriz.GetLength(0);
             }
             return arrayMedias;
