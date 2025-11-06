@@ -166,36 +166,50 @@ namespace Ejercicio7
             astros.Add(new Cometa("Encke", 4));
             astros.Add(new Planeta("Marte", 3390, false, 2));*/
 
-            try {
-                Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("appdata"));
-                using ( StreamReader sr = new StreamReader("astros.txt"))
+            try
+            {
+                Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("appdata"));//TODO comporbaciones
+                using (StreamReader sr = new StreamReader("astros.txt"))
                 {
                     string linea;
                     while ((linea = sr.ReadLine()) != null)
                     {
-                        string[] partes = linea.Split(',');
-                        if (partes[0] == "Planeta")
-                        {
-                            string nombre = partes[1];
-                            double radio = double.Parse(partes[2]);
-                            bool gaseoso = bool.Parse(partes[3]);
-                            int numSatelites = int.Parse(partes[4]);
-                            Planeta planeta = new Planeta(nombre, radio, gaseoso, numSatelites);
-                            astros.Add(planeta);
-                        }
-                        else if (partes[0] == "Cometa")
-                        {
-                            string nombre = partes[1];
-                            double radio = double.Parse(partes[2]);
-                            Cometa cometa = new Cometa(nombre, radio);
-                            astros.Add(cometa);
-                        }
+                         
+                            string[] partes = linea.Split(',');
+                            if (partes[0] == "Planeta" && partes.Length == 5)
+                            {
+                                string nombre = partes[1];
+                                bool radioBool = double.TryParse(partes[2], out double radio);
+                                bool gaseoso = bool.Parse(partes[3]);
+                                bool sateliteBool = int.TryParse(partes[4], out int numSatelites);
+                                if (radioBool && sateliteBool)
+                                {
+                                    Planeta planeta = new Planeta(nombre, radio, gaseoso, numSatelites);
+                                    astros.Add(planeta);
+                                }
+                            }
+                            else if (partes[0] == "Cometa" && partes.Length == 3)
+                            {
+                                string nombre = partes[1];
+                                bool radioBool = double.TryParse(partes[2], out double radio);
+                                if (radioBool)
+                                {
+                                    Cometa cometa = new Cometa(nombre, radio);
+                                    astros.Add(cometa);
+                                }
+                            }
+                 
                     }
+
                 }
-                
-            } catch (Exception e)
+            }
+            catch (IOException e)
             {
                 Console.WriteLine("Error al cargar los datos: " + e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine("No tienes permisos para acceder a los datos: " + e.Message);
             }
 
             bool salir = false;
@@ -248,9 +262,13 @@ namespace Ejercicio7
                                 }
                             }
                         }
-                        catch (Exception e)
+                        catch (IOException e)//permisos
                         {
                             Console.WriteLine("Error al guardar los datos: " + e.Message);
+                        }
+                        catch (UnauthorizedAccessException e)
+                        {
+                            Console.WriteLine("No tienes permisos para guardar los datos: " + e.Message);
                         }
 
                         salir = true;
